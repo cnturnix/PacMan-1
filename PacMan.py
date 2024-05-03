@@ -11,7 +11,7 @@ import keyboard
 
 
 def check_key_pressed():
-    keys = ['w', 'a', 's', 'd']
+    keys = ['w', 'a', 's', 'd', 'space']
     # 检查并返回哪些键被按下
     return {key for key in keys if keyboard.is_pressed(key)}
 
@@ -59,6 +59,7 @@ class PacMan(GameObject):
 
     def __init__(self, p):
         super().__init__(p, SpriteType.PACMAN)
+        self.view_grid = [[None for _ in range(globals.gameSize)] for _ in range(globals.gameSize)]
         self.pill_time = 0
         self.visited = set()
         self.direction = Direction.NONE
@@ -70,13 +71,22 @@ class PacMan(GameObject):
             Action(self.explore)
         )
 
+    def view(self):
+        for go in GameObject.gameObjects:
+            if go.position.x == -1 and go.position.y == -1:
+                continue
+            self.view_grid[go.position.x][go.position.y] = go.type
+
     def move(self):
-        direction = Direction.NONE
+        self.view()
         # 检查键盘输入
         keys = check_key_pressed()
         if not keys:
             self.behavior_tree.run()
             return self.direction
+        direction = Direction.NONE
+        if 'space' in keys:
+            return direction
         if 'w' in keys:
             direction |= Direction.UP
         if 's' in keys:
