@@ -1,4 +1,3 @@
-
 from GameObject import GameObject
 from GameDefs import Pos
 
@@ -14,6 +13,7 @@ class Node:
     def run(self):
         raise NotImplementedError
 
+
 class Selector(Node):
     def __init__(self, *nodes):
         self.nodes = nodes
@@ -24,12 +24,14 @@ class Selector(Node):
                 return True
         return False
 
+
 class Condition(Node):
     def __init__(self, func):
         self.func = func
 
     def run(self):
         return self.func()
+
 
 class Action(Node):
     def __init__(self, func):
@@ -38,8 +40,14 @@ class Action(Node):
     def run(self):
         return self.func()
 
+
 # 使用行为树管理 PacMan
 class PacMan(GameObject):
+    Direction_PacMan = [Direction.NONE,
+                        Direction.UP, Direction.DOWN,
+                        Direction.LEFT, Direction.RIGHT,
+                        Direction.UP | Direction.LEFT, Direction.UP | Direction.RIGHT,
+                        Direction.DOWN | Direction.LEFT, Direction.DOWN | Direction.RIGHT]
 
     def __init__(self, p):
         super().__init__(p, SpriteType.PACMAN)
@@ -54,7 +62,6 @@ class PacMan(GameObject):
             Action(self.explore)
         )
 
-
     def move(self):
         self.behavior_tree.run()
         return self.direction
@@ -63,7 +70,7 @@ class PacMan(GameObject):
         if self.pill_time > 0:
             best_direction = Direction.NONE
             min_distance = float('inf')
-            for d in Direction:
+            for d in self.Direction_PacMan:
                 new_pos = self.calculate_new_position(d)
                 if globals.game.check_position(new_pos) != SpriteType.WALL:
                     distance = abs(new_pos.x - globals.ghost.position.x) + abs(new_pos.y - globals.ghost.position.y)
@@ -76,7 +83,8 @@ class PacMan(GameObject):
 
     def near_ghost(self):
         distance = abs(globals.ghost.position.x - self.position.x) + abs(globals.ghost.position.y - self.position.y)
-        if distance < 10 and distance < (abs(globals.pill.position.x - self.position.x) + abs(globals.pill.position.y - self.position.y)) and not self.pill_time > 0:
+        if distance < 10 and distance < (abs(globals.pill.position.x - self.position.x) + abs(
+                globals.pill.position.y - self.position.y)) and not self.pill_time > 0:
             self.direction = self.avoid_ghost()
             return True
         return False
@@ -137,7 +145,6 @@ class PacMan(GameObject):
         }
         dx, dy = delta[direction]
         return Pos(self.position.x + dx, self.position.y + dy)
-
 
     def eat(self, pill):
         pill.eaten()
