@@ -30,3 +30,4 @@ class PacMan(GameObject):
     def update(self):
         if self.pill_time > 0:
             self.pill_time -= 1
+        super().update()
