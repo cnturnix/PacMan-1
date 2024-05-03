@@ -7,6 +7,14 @@ from GameDefs import globals
 
 import random
 
+import keyboard
+
+
+def check_key_pressed():
+    keys = ['w', 'a', 's', 'd']
+    # 检查并返回哪些键被按下
+    return {key for key in keys if keyboard.is_pressed(key)}
+
 
 # 行为树节点定义
 class Node:
@@ -63,8 +71,21 @@ class PacMan(GameObject):
         )
 
     def move(self):
-        self.behavior_tree.run()
-        return self.direction
+        direction = Direction.NONE
+        # 检查键盘输入
+        keys = check_key_pressed()
+        if not keys:
+            self.behavior_tree.run()
+            return self.direction
+        if 'w' in keys:
+            direction |= Direction.UP
+        if 's' in keys:
+            direction |= Direction.DOWN
+        if 'a' in keys:
+            direction |= Direction.LEFT
+        if 'd' in keys:
+            direction |= Direction.RIGHT
+        return direction
 
     def chase_ghost(self):
         if self.pill_time > 0:
