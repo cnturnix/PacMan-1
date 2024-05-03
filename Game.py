@@ -45,7 +45,7 @@ class Game:
     def update(self):
         Game.gameTime += 1
 
-        if self.grid[self.pacman.position.x][self.pacman.position.y] != None:
+        if self.grid[self.pacman.position.x][self.pacman.position.y] is not None:
             self.grid[self.pacman.position.x][self.pacman.position.y].hide()
             self.grid[self.pacman.position.x][self.pacman.position.y] = None
             self.score += 1
