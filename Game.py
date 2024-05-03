@@ -55,13 +55,14 @@ class Game:
         self.ghost.update()
         self.pill.update()
 
-        if not self.pill.isActive() and self.pacman.checkCollision(self.pill):
-            self.pill.eaten()
+        if self.pacman.checkCollision(self.pill):
+            self.pacman.eat(self.pill)
         if self.pacman.checkCollision(self.ghost):
-            if self.pill.isActive():
+            if self.pacman.pill_time > 0:
                 self.ghost.hide()
                 self.score += 100
             else:
+                # self.ghost.reset()
                 print("Score: " + str(self.score))
                 return True
 
