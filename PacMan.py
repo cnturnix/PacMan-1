@@ -128,7 +128,7 @@ class PacMan(GameObject):
         return False
 
     def pill_active(self):
-        if not self.pill_time > 0:
+        if not self.pill_time > 0 and globals.pill.position.x != -1 and globals.pill.position.y != -1:
             print("active")
             self.direction = self.move_towards(globals.pill.position)
             return True
@@ -137,7 +137,7 @@ class PacMan(GameObject):
     def explore(self):
         directions = list(Direction)
         random.shuffle(directions)
-        for d in directions:
+        for d in self.Direction_PacMan:
             new_pos = self.calculate_new_position(d)
             if new_pos not in self.visited and globals.game.check_position(new_pos) != SpriteType.WALL:
                 self.visited.add(new_pos)
