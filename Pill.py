@@ -1,5 +1,5 @@
 from GameObject import GameObject
-from GameDefs import SpriteType
+from GameDefs import SpriteType, Direction
 
 
 class Pill(GameObject):
@@ -17,3 +17,6 @@ class Pill(GameObject):
     def update(self):
         if self.timer > 0:
             self.timer -= 1
+
+    def move(self):
+        return Direction.NONE
