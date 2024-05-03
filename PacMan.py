@@ -1,3 +1,5 @@
+from time import sleep
+
 from GameObject import GameObject
 from GameDefs import Pos
 
@@ -72,6 +74,9 @@ class PacMan(GameObject):
         )
 
     def view(self):
+        for i in range(globals.gameSize):
+            for j in range(globals.gameSize):
+                self.view_grid[i][j] = None
         for go in GameObject.gameObjects:
             if go.position.x == -1 and go.position.y == -1:
                 continue
@@ -79,6 +84,8 @@ class PacMan(GameObject):
 
     def move(self):
         self.view()
+        while keyboard.is_pressed('ctrl'):
+            sleep(0.5)
         # 检查键盘输入
         keys = check_key_pressed()
         if not keys:
