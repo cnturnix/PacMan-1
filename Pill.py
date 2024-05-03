@@ -12,7 +12,7 @@ class Pill(GameObject):
 
     def eaten(self):
         self.hide()
-        self.reset_time = 3
+        self.reset_time = 30
 
     def update(self):
         if self.reset_time > 0:
