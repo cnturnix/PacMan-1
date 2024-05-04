@@ -104,18 +104,9 @@ class PacMan(GameObject):
             direction |= Direction.RIGHT
         return direction
 
-    def chase_ghost(self):
+       def chase_ghost(self):
         if self.pill_time > 0:
-            best_direction = Direction.NONE
-            min_distance = float('inf')
-            for d in self.Direction_PacMan:
-                new_pos = self.calculate_new_position(d)
-                if globals.game.check_position(new_pos) != SpriteType.WALL:
-                    distance = abs(new_pos.x - globals.ghost.position.x) + abs(new_pos.y - globals.ghost.position.y)
-                    if distance < min_distance:
-                        min_distance = distance
-                        best_direction = d
-            self.direction = best_direction
+            self.direction = self.move_towards(globals.ghost.position)
             return True
         return False
 
@@ -157,16 +148,17 @@ class PacMan(GameObject):
                     best_direction = d
         return best_direction
 
-    def move_towards(self, target):
+        def move_towards(self, target):
         best_direction = Direction.NONE
         min_distance = float('inf')
-        for d in Direction:
+        for d in self.Direction_PacMan:
             new_pos = self.calculate_new_position(d)
             if globals.game.check_position(new_pos) != SpriteType.WALL:
                 distance = abs(new_pos.x - target.x) + abs(new_pos.y - target.y)
                 if distance < min_distance:
                     min_distance = distance
                     best_direction = d
+        self.direction = best_direction
         return best_direction
 
     def calculate_new_position(self, direction):
