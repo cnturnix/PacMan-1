@@ -10,6 +10,10 @@ game = Game()
 gameScale = 20
 globals.game = game
 
+score_label = tk.Label(root, text=f"Score: {game.score}", fg="white", bg="black")
+round_label = tk.Label(root, text=f"Round: {game.gameTime}", fg="white", bg="black")
+
+
 
 def refresh_canvas():
     """
@@ -43,6 +47,8 @@ def refresh_canvas():
             canvas.create_oval(x + gameScale / 2 - 1, y + gameScale / 2 - 1, x + gameScale / 2 + 1,
                                y + gameScale / 2 + 1, fill="white", outline="black")
 
+    score_label.config(text=f"Score: {game.score}")
+    round_label.config(text=f"Round: {game.gameTime}")
     # Schedule the next canvas refresh in 1000ms (1 second)
     if not finished:
         root.after(300, refresh_canvas)
@@ -53,6 +59,9 @@ def main():
     canvas.config(width=size, height=size)
 
     canvas.pack(fill="both", expand=True)
+    score_label.pack(fill="x")
+    round_label.pack(fill="x")
+    canvas.focus_set()
 
     refresh_canvas()
 

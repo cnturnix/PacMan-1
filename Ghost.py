@@ -10,6 +10,9 @@ class Ghost(GameObject):
         super().__init__(p, SpriteType.GHOST)
 
     def move(self):
+        if self.position.x == -1 and self.position.y == -1:
+            self.position = self.startPos
+            return Direction.NONE
         direction = Direction.NONE
         if globals.pacman.position.y > self.position.y:
             direction |= Direction.DOWN

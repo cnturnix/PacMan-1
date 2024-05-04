@@ -1,3 +1,5 @@
+from time import sleep
+
 from GameObject import GameObject
 from GameDefs import Pos
 
@@ -6,6 +8,14 @@ from GameDefs import Direction
 from GameDefs import globals
 
 import random
+
+import keyboard
+
+
+def check_key_pressed():
+    keys = ['w', 'a', 's', 'd', 'space']
+    # 检查并返回哪些键被按下
+    return {key for key in keys if keyboard.is_pressed(key)}
 
 
 # 行为树节点定义
@@ -51,6 +61,7 @@ class PacMan(GameObject):
 
     def __init__(self, p):
         super().__init__(p, SpriteType.PACMAN)
+        self.view_grid = [[None for _ in range(globals.gameSize)] for _ in range(globals.gameSize)]
         self.pill_time = 0
         self.visited = set()
         self.direction = Direction.NONE
@@ -62,9 +73,36 @@ class PacMan(GameObject):
             Action(self.explore)
         )
 
+    def view(self):
+        for i in range(globals.gameSize):
+            for j in range(globals.gameSize):
+                self.view_grid[i][j] = None
+        for go in GameObject.gameObjects:
+            if go.position.x == -1 and go.position.y == -1:
+                continue
+            self.view_grid[go.position.x][go.position.y] = go.type
+
     def move(self):
-        self.behavior_tree.run()
-        return self.direction
+        self.view()
+        while keyboard.is_pressed('ctrl'):
+            sleep(0.5)
+        # 检查键盘输入
+        keys = check_key_pressed()
+        if not keys:
+            self.behavior_tree.run()
+            return self.direction
+        direction = Direction.NONE
+        if 'space' in keys:
+            return direction
+        if 'w' in keys:
+            direction |= Direction.UP
+        if 's' in keys:
+            direction |= Direction.DOWN
+        if 'a' in keys:
+            direction |= Direction.LEFT
+        if 'd' in keys:
+            direction |= Direction.RIGHT
+        return direction
 
     def chase_ghost(self):
         if self.pill_time > 0:
@@ -90,7 +128,7 @@ class PacMan(GameObject):
         return False
 
     def pill_active(self):
-        if not self.pill_time > 0:
+        if not self.pill_time > 0 and globals.pill.position.x != -1 and globals.pill.position.y != -1:
             print("active")
             self.direction = self.move_towards(globals.pill.position)
             return True
@@ -99,7 +137,7 @@ class PacMan(GameObject):
     def explore(self):
         directions = list(Direction)
         random.shuffle(directions)
-        for d in directions:
+        for d in self.Direction_PacMan:
             new_pos = self.calculate_new_position(d)
             if new_pos not in self.visited and globals.game.check_position(new_pos) != SpriteType.WALL:
                 self.visited.add(new_pos)
